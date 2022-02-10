@@ -6,10 +6,13 @@ import sys
 
 app = Flask(__name__)
 
+# Making GET request to db
+
 
 @app.get('/candy')
 def list_all_candies():
     try:
+        # Trying to get an output from the function and converting it to json
         candies = dbi.list_all_candies()
         candies_json = json.dumps(candies, default=str)
         return Response(candies_json, mimetype="application/json", status=200)
@@ -17,13 +20,17 @@ def list_all_candies():
         print("Something went wrong")
         return Response("Sorry, something is wrong with the service. Please try again later", mimetype="plain/text", status=501)
 
+# Making POST request to db
+
 
 @app.post('/candy')
 def add_new_candy():
     try:
+        # Expecting values from the user to pass to the function that will create a new entry in db
         name = request.json['name']
         description = request.json['description']
         image_url = request.json['image_url']
+        # Trying to get an output from the function and converting it to json in case a new row is added to db
         new_candy = dbi.add_new_candy(name, description, image_url)
         if(new_candy == True):
             new_candy_json = json.dumps(new_candy, default=str)
@@ -35,11 +42,15 @@ def add_new_candy():
         print("Something went wrong")
         return Response("Sorry, something is wrong with the service. Please try again later", mimetype="plain/text", status=501)
 
+# Making PATCH (update) request to db
+
 
 @app.patch('/candy')
 def update_candy():
     try:
+        # Getting id of the item and passing it to the function so that an item can be edited based on its id
         candy_id = request.json['candy_id']
+        # Trying to get an output from the function and converting it to json if the request was successful
         candy_id = dbi.update_candy(candy_id)
         if(candy_id == True):
             candy_id_json = json.dumps(candy_id, default=str)
@@ -50,11 +61,15 @@ def update_candy():
         print("Something went wrong")
         return Response("Sorry, something is wrong with the service. Please try again later", mimetype="plain/text", status=501)
 
+# Making DELETE request to db
+
 
 @app.delete('/candy')
 def delete_candy():
     try:
+        # Getting id of the item and passing it to the function so that an item can be deleted based on its id
         candy_id = request.json['candy_id']
+        # Trying to get an output from the function and converting it to json if the request was successful
         candy_id = dbi.delete_candy(candy_id)
         if(candy_id == True):
             candy_id_json = json.dumps(candy_id, default=str)
